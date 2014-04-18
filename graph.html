@@ -8,7 +8,7 @@
   	 height = Math.max(500, window.innerHeight - 20);
 
 var force = d3.layout.force()
-	.size([800,500])
+	.size([width,height])
 	.start();
 
 var masterNodes = [];
@@ -100,8 +100,8 @@ d3.json("bilder.json", function(error, graph) {
  //updateForce();
 });
 
-  force.nodes(masterNodes);
+/*  force.nodes(masterNodes);
   force.links(masterLinks);
-  force.start();
+  force.start();*/
 
 </script>
