@@ -1,7 +1,25 @@
 <!DOCTYPE html>
 
-<script src="d3.min.js"></script>
 
+<style>
+
+.link {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node {
+  cursor: move;
+  fill: #ccc;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+</style>
+
+<body>
+
+<script src="d3.min.js"></script>
 <script>
 
  var width = Math.max(800, window.innerWidth - 20),
@@ -9,13 +27,52 @@
 
 var force = d3.layout.force()
 	.size([width,height])
-	.start();
+	.on("tick", tick);
 
 var masterNodes = [];
 var masterLinks = [];
 
-  /* function updateGraph() {
-      link = link.data(force.links(), function(d) { return d.source.name + "-" + d.target.name; });
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var link = svg.selectAll(".link"),
+    node = svg.selectAll(".node");
+
+d3.json("bilder.json", function(error, graph) {
+
+  // grab node and relation values from data
+  masterNodes = graph.nodes;
+  var relations = graph.relations;
+  //parse relations into links
+  relations.forEach(function(e) { 
+      // get source and target index
+      var sourceIndex = masterNodes.filter(function(n) { return n.name === e.Sci1; })[0],
+          targetIndex = masterNodes.filter(function(n) { return n.name === e.Sci2; })[0];
+      // push tuple onto link array
+      masterLinks.push({Sci1: sourceIndex,  Sci2: targetIndex, NumLinks: e.NumLinks});
+  });
+
+
+ force
+    .nodes(masterNodes)
+    .links(masterLinks)
+    .start();
+
+  link = link.data(graph.links)
+    .enter().append("line")
+      .attr("class", "link");
+
+  node = node.data(graph.nodes)
+    .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 12)
+      .on("dblclick", dblclick)
+      .call(drag);
+});
+
+/*  function updateGraph() {
+      link = link.data(force.links(), function(d) { return d.Sci1.name + "-" + d.Sci2.name; });
       link.enter()
         .append("line")
         .attr("class", "link")
@@ -83,25 +140,4 @@ var masterLinks = [];
       updateGraph();
 
     }*/
-
-d3.json("bilder.json", function(error, graph) {
-
-  // grab node and relation values from data
-  masterNodes = graph.nodes;
-  var relations = graph.relations;
-  //parse relations into links
-  relations.forEach(function(e) { 
-      // get source and target index
-      var sourceIndex = masterNodes.filter(function(n) { return n.name === e.Sci1; })[0],
-          targetIndex = masterNodes.filter(function(n) { return n.name === e.Sci2; })[0];
-      // push tuple onto link array
-      masterLinks.push({Sci1: sourceIndex,  Sci2: targetIndex, NumLinks: e.NumLinks});
-  });
- //updateForce();
-});
-
-  force.nodes(masterNodes);
-  force.links(masterLinks);
-  //force.start();
-
 </script>
