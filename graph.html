@@ -54,10 +54,9 @@ d3.json("bilder.json", function(error, graph) {
       var sourceIndex = nodes.filter(function(n) { return n.name === e.source; })[0],
           targetIndex = nodes.filter(function(n) { return n.name === e.target; })[0];
       // push tuple onto link array
-      if(sourceIndex.length == 0 || targetIndex.length == 0){
-          continue;
+      if(sourceIndex.length != 0 && targetIndex.length != 0){
+          links.push({source: sourceIndex,  target: targetIndex, value: e.value});
       }
-     links.push({source: sourceIndex,  target: targetIndex, value: e.value});
   });
 
 
