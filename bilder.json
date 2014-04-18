@@ -6932,7 +6932,7 @@
     "name":"ZUCHNER,S",
     "degree":1
   }
- ]
+ ],
  "relations":[
   {
     "Sci1":"ANDREASEN,NC",
@@ -22364,5 +22364,4 @@
     "Sci2":"ZUCKER,RS",
     "NumLinks":1
   }
-]
-}
+]}
