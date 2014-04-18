@@ -25,12 +25,15 @@
  var width = Math.max(800, window.innerWidth - 20),
   	 height = Math.max(500, window.innerHeight - 20);
 
-var force = d3.layout.force()
-	.size([width,height])
-	.on("tick", tick);
+var color = d3.scale.category20();
 
-var masterNodes = [];
-var masterLinks = [];
+var force = d3.layout.force()
+    .charge(-120)
+    .linkDistance(30)
+    .size([width, height]);
+
+var nodes = [];
+var links = [];
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
@@ -39,46 +42,47 @@ var svg = d3.select("body").append("svg")
 var link = svg.selectAll(".link"),
     node = svg.selectAll(".node");
 
-function tick() {
-  link.attr("x1", function(d) { return d.source.x; })
-      .attr("y1", function(d) { return d.source.y; })
-      .attr("x2", function(d) { return d.target.x; })
-      .attr("y2", function(d) { return d.target.y; });
-
-  node.attr("cx", function(d) { return d.x; })
-      .attr("cy", function(d) { return d.y; });
-}
 
 d3.json("bilder.json", function(error, graph) {
 
   // grab node and relation values from data
-  masterNodes = graph.nodes;
+  nodes = graph.nodes;
   var relations = graph.relations;
   //parse relations into links
   relations.forEach(function(e) { 
       // get source and target index
-      var sourceIndex = masterNodes.filter(function(n) { return n.name === e.Sci1; })[0],
-          targetIndex = masterNodes.filter(function(n) { return n.name === e.Sci2; })[0];
+      var sourceIndex = nodes.filter(function(n) { return n.name === e.source; })[0],
+          targetIndex = nodes.filter(function(n) { return n.name === e.target; })[0];
       // push tuple onto link array
-      masterLinks.push({Sci1: sourceIndex,  Sci2: targetIndex, NumLinks: e.NumLinks});
+     links.push({source: sourceIndex,  target: targetIndex, value: e.value});
   });
 
 
  force
-    .nodes(masterNodes)
-    .links(masterLinks)
+    .nodes(nodes)
+    .links(links)
     .start();
 
-  link = link.data(graph.links)
+  var link = link.data(graph.links)
     .enter().append("line")
       .attr("class", "link");
 
-  node = node.data(graph.nodes)
+  var node = node.data(graph.nodes)
     .enter().append("circle")
       .attr("class", "node")
       .attr("r", 12)
       .on("dblclick", dblclick)
       .call(drag);
+
+  force.on("tick", function() {
+      link.attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
+
+      node.attr("cx", function(d) { return d.x; })
+          .attr("cy", function(d) { return d.y; });
+    });
 });
 
 /*  function updateGraph() {
