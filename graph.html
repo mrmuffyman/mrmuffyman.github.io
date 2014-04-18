@@ -63,16 +63,18 @@ d3.json("bilder.json", function(error, graph) {
     .links(links)
     .start();
 
-  var link = link.data(graph.links)
-    .enter().append("line")
-      .attr("class", "link");
+  var link = svg.selectAll(".link")
+      .data(links)
+      .enter().append("line")
+      .attr("class", "link")
 
-  var node = node.data(graph.nodes)
+  var node = svg.selectAll(".node")
+      .data(nodes)
     .enter().append("circle")
       .attr("class", "node")
-      .attr("r", 12)
-      .on("dblclick", dblclick)
-      .call(drag);
+      .attr("r", 5)
+      .style("fill", function(d) { return "red"; })
+      .call(force.drag);
 
   force.on("tick", function() {
       link.attr("x1", function(d) { return d.source.x; })
