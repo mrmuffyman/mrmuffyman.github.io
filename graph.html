@@ -42,7 +42,8 @@ var svg = d3.select("body").append("svg")
     .attr("height", height);
 
 var link = svg.selectAll(".link"),
-    node = svg.selectAll(".node");
+    node = svg.selectAll(".node"),
+    label = svg.selectAll(".label");
 
 
 d3.json("bilder.json", function(error, graph) {
@@ -69,12 +70,12 @@ d3.json("bilder.json", function(error, graph) {
     .links(links)
     .start();
 
-  var link = svg.selectAll(".link")
+  link = svg.selectAll(".link")
       .data(links)
       .enter().append("line")
       .attr("class", "link")
 
-  var node = svg.selectAll(".node")
+  node = svg.selectAll(".node")
       .data(nodes)
     .enter().append("circle")
       .attr("class", "node")
@@ -82,8 +83,7 @@ d3.json("bilder.json", function(error, graph) {
       .style("fill", function(d) { return "red"; })
       .call(force.drag);
 
-  var label = svg.select(".labels").selectAll(".label");
-
+    label = svg.selectAll(".label");
     label = label.data(force.nodes(), function(d) { return d.name; });
       label.enter()
         .append("text")
