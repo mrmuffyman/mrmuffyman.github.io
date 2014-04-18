@@ -51,11 +51,13 @@ d3.json("bilder.json", function(error, graph) {
   //parse relations into links
   relations.forEach(function(e) { 
       // get source and target index
-      var sourceIndex = nodes.filter(function(n) { return n.name === e.source; })[0],
-          targetIndex = nodes.filter(function(n) { return n.name === e.target; })[0];
-      // push tuple onto link array
-      if(typeof sourceIndex !== 'undefined' && typeof targetIndex !== 'undefined'){
-          links.push({source: sourceIndex,  target: targetIndex, value: e.value});
+      if(e.value > 1){
+        var sourceIndex = nodes.filter(function(n) { return n.name === e.source; })[0],
+            targetIndex = nodes.filter(function(n) { return n.name === e.target; })[0];
+        // push tuple onto link array
+        if(typeof sourceIndex !== 'undefined' && typeof targetIndex !== 'undefined'){
+            links.push({source: sourceIndex,  target: targetIndex, value: e.value});
+        }
       }
   });
 
