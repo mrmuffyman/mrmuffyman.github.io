@@ -13,7 +13,7 @@ var force = d3.layout.force()
 
 var masterNodes = [];
 var masterLinks = [];
-/*
+
    function updateGraph() {
       link = link.data(force.links(), function(d) { return d.source.name + "-" + d.target.name; });
       link.enter()
@@ -83,7 +83,7 @@ var masterLinks = [];
       updateGraph();
 
     }
-*/
+
 d3.json("bilder.json", function(error, graph) {
 
   // grab node and relation values from data
@@ -98,7 +98,7 @@ d3.json("bilder.json", function(error, graph) {
       masterLinks.push({Sci1: sourceIndex,  Sci2: targetIndex, NumLinks: e.NumLinks});
   });
 
-//  updateForce();
+ updateForce();
 });
 
 </script>
