@@ -46,7 +46,7 @@ var link = svg.selectAll(".link"),
 d3.json("bilder.json", function(error, graph) {
 
   // grab node and relation values from data
-  nodes = graph.nodes;
+  nodes = graph.nodes.filter(function(n) {return n.degree > 18});
   var relations = graph.relations;
   //parse relations into links
   relations.forEach(function(e) { 
