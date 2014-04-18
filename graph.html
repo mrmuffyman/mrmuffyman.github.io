@@ -97,11 +97,11 @@ d3.json("bilder.json", function(error, graph) {
       // push tuple onto link array
       masterLinks.push({Sci1: sourceIndex,  Sci2: targetIndex, NumLinks: e.NumLinks});
   });
+ //updateForce();
+});
 
   force.nodes(masterNodes);
   force.links(masterLinks);
   force.start();
- //updateForce();
-});
 
 </script>
