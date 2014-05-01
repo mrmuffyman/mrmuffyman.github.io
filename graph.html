@@ -29,9 +29,9 @@ var color = d3.scale.category20();
 
 var force = d3.layout.force()
     .gravity(0.1)
-    .charge(-1500)
-    .linkStrength(0.3)
-    .linkDistance(80)
+    .charge(-2000)
+    .linkStrength(0.1)
+    .linkDistance(200)
     .size([width, height]);
 
 var nodes = [];
@@ -41,27 +41,24 @@ var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-var link = svg.selectAll(".link"),
-    node = svg.selectAll(".node"),
-    label = svg.selectAll(".label");
-
-
 d3.json("bilder.json", function(error, graph) {
 
   // grab node and relation values from data
-  nodes = graph.nodes.filter(function(n) {return n.degree > 18});
   var relations = graph.relations;
   //parse relations into links
+  relations = relations.filter(function(n){return n.value > 12});
+  //only want nodes of certain degree and who exist in a relation
+  nodes = graph.nodes.filter(function(n){
+  	return n.degree > 10 && (relations.some(function(e){return (n.name === e.source || n.name === e.target) }));
+  })
   relations.forEach(function(e) { 
       // get source and target index
-      if(e.value > 5){
         var sourceIndex = nodes.filter(function(n) { return n.name === e.source; })[0],
             targetIndex = nodes.filter(function(n) { return n.name === e.target; })[0];
         // push tuple onto link array
         if(typeof sourceIndex !== 'undefined' && typeof targetIndex !== 'undefined'){
             links.push({source: sourceIndex,  target: targetIndex, value: e.value});
         }
-      }
   });
 
 
@@ -72,24 +69,29 @@ d3.json("bilder.json", function(error, graph) {
 
   link = svg.selectAll(".link")
       .data(links)
-      .enter().append("line")
+      .enter()
+      .append("line")
       .attr("class", "link")
+      .style("stroke", "grey")
+
 
   node = svg.selectAll(".node")
       .data(nodes)
-    .enter().append("circle")
+      .enter()
+      .append("circle")
       .attr("class", "node")
-      .attr("r", 5)
-      .style("fill", function(d) { return "red"; })
+      .attr("r", 10)
+      .style("fill", function(d) { return "orange"; })
       .call(force.drag);
 
     label = svg.selectAll(".label");
     label = label.data(force.nodes(), function(d) { return d.name; });
-      label.enter()
+         label.enter()
         .append("text")
         .attr("x", 12)
         .attr("dy", ".35em")
-        .text(function(d) { return d.name; });
+        .text(function(d) { return d.name; })
+        .attr("font-family", "sans-serif")
       label.exit().remove();
 
   force.on("tick", function() {
